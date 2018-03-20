@@ -1,20 +1,25 @@
-package vk.com.library.entities;
+package vk.com.library.dto;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import vk.com.library.entities.UserRole;
+import vk.com.library.validations.PasswordMatches;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-@Entity
-@Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@PasswordMatches
+@JsonIgnoreProperties({"password", "passwordConfirmation"})
+public class UserDto {
     private Integer id;
-    @Column(nullable = false, unique = true)
+    @NotEmpty
+    @NotNull
     private String username;
+    @NotEmpty
+    @NotNull
     private String password;
+    private String passwordConfirmation;
     private Boolean active;
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinTable(name = "users_to_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<UserRole> roles;
 
     public Integer getId() {
@@ -39,6 +44,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPasswordConfirmation() {
+        return passwordConfirmation;
+    }
+
+    public void setPasswordConfirmation(String passwordConfirmation) {
+        this.passwordConfirmation = passwordConfirmation;
     }
 
     public Boolean getActive() {

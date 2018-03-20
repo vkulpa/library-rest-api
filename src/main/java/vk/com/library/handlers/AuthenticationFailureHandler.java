@@ -1,4 +1,4 @@
-package vk.com.library.components;
+package vk.com.library.handlers;
 
 
 import org.springframework.http.HttpStatus;

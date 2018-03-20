@@ -1,4 +1,4 @@
-package vk.com.library.components;
+package vk.com.library.handlers;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
