@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @PasswordMatches
-@JsonIgnoreProperties({"password", "passwordConfirmation"})
+@JsonIgnoreProperties(value = {"password", "passwordConfirmation"}, allowSetters = true)
 public class UserDto {
     private Integer id;
     @NotEmpty

@@ -13,7 +13,7 @@ import vk.com.library.services.api.BookService;
 import java.util.List;
 import java.util.Optional;
 
-@RequestMapping("/v1/books")
+@RequestMapping(value = "/v1/books", headers = "X-API-VERSION=1", produces = "application/vnd.library.app-v1+json")
 @RestController
 public class BooksController {
     @Autowired
