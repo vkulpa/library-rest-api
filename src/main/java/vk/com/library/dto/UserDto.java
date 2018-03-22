@@ -4,19 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import vk.com.library.entities.UserRole;
 import vk.com.library.validations.PasswordMatches;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @PasswordMatches
 @JsonIgnoreProperties(value = {"password", "passwordConfirmation"}, allowSetters = true)
 public class UserDto {
     private Integer id;
-    @NotEmpty
     @NotNull
+    @Size(min = 3, max = 50)
     private String username;
-    @NotEmpty
     @NotNull
+    @Size(min = 3)
     private String password;
     private String passwordConfirmation;
     private Boolean active;

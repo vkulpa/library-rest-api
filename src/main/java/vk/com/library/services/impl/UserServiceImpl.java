@@ -8,6 +8,7 @@ import vk.com.library.entities.User;
 import vk.com.library.entities.UserRole;
 import vk.com.library.exceptions.UsernameExistsException;
 import vk.com.library.repositories.UserRepository;
+import vk.com.library.repositories.UserRoleRepository;
 import vk.com.library.services.api.UserService;
 
 import javax.transaction.Transactional;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    UserRoleRepository userRoleRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -48,10 +51,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setActive(true);
-
-        Set<UserRole> userRoles = new HashSet<>();
-        userRoles.add(new UserRole(1, "User"));
-        user.setRoles(userRoles);
+        user.setRoles(userRoleRepository.findAllByName("User"));
         return user;
     }
 
