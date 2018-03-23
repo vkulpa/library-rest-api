@@ -8,6 +8,9 @@ import vk.com.library.dto.UserDto;
 import vk.com.library.exceptions.ResourceNotFoundException;
 import vk.com.library.services.LibraryUserDetails;
 import vk.com.library.services.api.UserService;
+import vk.com.library.validations.markers.CreateMarker;
+import vk.com.library.validations.markers.UpdateMarker;
+import vk.com.library.validations.markers.UpdatePasswordMarker;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,21 +25,28 @@ public class UsersController {
     UserService userService;
 
     @PostMapping("/register")
-    public UserDto register(@RequestBody @Validated UserDto userDto) {
+    public UserDto register(@RequestBody @Validated(CreateMarker.class) UserDto userDto) {
         return userService.registerNewUser(userDto);
+    }
+
+    @PreAuthorize("hasPermission(#id, 'User', 'read')")
+    @GetMapping("/{id}")
+    public UserDto userById(@PathVariable final Integer id) {
+        Optional<UserDto> user = userService.findById(id);
+        user.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return user.get();
+    }
+
+    @PreAuthorize("#id == #userDto.id && hasPermission(#id, 'User', 'write')")
+    @PutMapping("/{id}/update")
+    public UserDto update(@PathVariable final Integer id,
+                          @RequestBody @Validated({UpdateMarker.class, UpdatePasswordMarker.class}) UserDto userDto) {
+        return userService.updateUser(userById(userDto.getId()));
     }
 
     @PreAuthorize("hasRole('Admin')")
     @GetMapping
     public List<UserDto> index() {
         return userService.findAll();
-    }
-
-    @PreAuthorize("hasPermission('User', 'write')")
-    @GetMapping("/{id}")
-    public UserDto userById(@PathVariable final Integer id) {
-        Optional<UserDto> user = userService.findById(id);
-        user.orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return user.get();
     }
 }

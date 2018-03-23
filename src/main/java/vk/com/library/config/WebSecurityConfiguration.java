@@ -36,7 +36,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.authorizeRequests().antMatchers("/**/users/register").anonymous();
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
-        http.formLogin().permitAll()
+        http.formLogin().loginProcessingUrl("/v1/login").permitAll()
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler(authenticationFailureHandler);
         http.authorizeRequests().anyRequest().authenticated();

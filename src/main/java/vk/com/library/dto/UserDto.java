@@ -3,20 +3,24 @@ package vk.com.library.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import vk.com.library.entities.UserRole;
 import vk.com.library.validations.PasswordMatches;
+import vk.com.library.validations.markers.CreateMarker;
+import vk.com.library.validations.markers.UpdateMarker;
+import vk.com.library.validations.markers.UpdatePasswordMarker;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-@PasswordMatches
+@PasswordMatches(groups = { CreateMarker.class, UpdatePasswordMarker.class })
 @JsonIgnoreProperties(value = {"password", "passwordConfirmation"}, allowSetters = true)
 public class UserDto {
+    @NotNull(groups = UpdateMarker.class)
     private Integer id;
-    @NotNull
-    @Size(min = 3, max = 50)
+    @NotNull(groups = CreateMarker.class)
+    @Size(min = 3, max = 50, groups = CreateMarker.class)
     private String username;
-    @NotNull
-    @Size(min = 3)
+    @NotNull(groups = { CreateMarker.class, UpdatePasswordMarker.class})
+    @Size(min = 3, groups = { CreateMarker.class, UpdatePasswordMarker.class})
     private String password;
     private String passwordConfirmation;
     private Boolean active;

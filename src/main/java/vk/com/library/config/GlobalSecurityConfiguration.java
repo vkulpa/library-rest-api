@@ -5,7 +5,7 @@ import org.springframework.security.access.expression.method.DefaultMethodSecuri
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
-import vk.com.library.handlers.UserEditEvaluator;
+import vk.com.library.handlers.DefaultPermissionEvaluator;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -14,7 +14,7 @@ public class GlobalSecurityConfiguration extends GlobalMethodSecurityConfigurati
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-        expressionHandler.setPermissionEvaluator(new UserEditEvaluator());
+        expressionHandler.setPermissionEvaluator(new DefaultPermissionEvaluator());
         return expressionHandler;
     }
 }

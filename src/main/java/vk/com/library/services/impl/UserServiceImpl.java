@@ -5,17 +5,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import vk.com.library.dto.UserDto;
 import vk.com.library.entities.User;
-import vk.com.library.entities.UserRole;
 import vk.com.library.exceptions.UsernameExistsException;
 import vk.com.library.repositories.UserRepository;
 import vk.com.library.repositories.UserRoleRepository;
 import vk.com.library.services.api.UserService;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +40,12 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new UsernameExistsException("Username already exists, please choose another one.");
         }
+        return convertEntityToDto(userRepository.save(convertDtoToEntity(user)));
+    }
+
+    @Transactional
+    public UserDto updateUser(UserDto user) {
+        // TODO: update doesn't work yet
         return convertEntityToDto(userRepository.save(convertDtoToEntity(user)));
     }
 

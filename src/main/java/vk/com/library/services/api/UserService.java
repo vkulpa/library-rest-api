@@ -9,4 +9,5 @@ public interface UserService {
     Optional<UserDto> findById(Integer id);
     List<UserDto> findAll();
     UserDto registerNewUser(UserDto user);
+    UserDto updateUser(UserDto user);
 }
