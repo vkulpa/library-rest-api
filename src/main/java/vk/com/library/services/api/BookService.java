@@ -7,6 +7,5 @@ import java.util.Optional;
 
 public interface BookService {
     List<BookDto> findAll();
-    List<BookDto> findByAvailable(boolean available);
     Optional<BookDto> findById(Integer id);
 }

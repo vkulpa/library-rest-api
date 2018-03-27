@@ -25,13 +25,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> findByAvailable(boolean available) {
-        List<Book> books = bookRepository.findByAvailable(available);
-        List<BookDto> bookDtos = books.stream().map(this::convertEntityToDto).collect(Collectors.toList());
-        return bookDtos;
-    }
-
-    @Override
     public Optional<BookDto> findById(Integer id) {
         Optional<Book> entity = bookRepository.findById(id);
         return entity.map(this::convertEntityToDto);
@@ -42,7 +35,6 @@ public class BookServiceImpl implements BookService {
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setAuthor(entity.getAuthor());
-        dto.setAvailable(entity.getAvailable());
         return dto;
     }
 }

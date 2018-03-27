@@ -1,6 +1,7 @@
 package vk.com.library.entities;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "books")
@@ -10,7 +11,10 @@ public class Book {
     private Integer id;
     private String name;
     private String author;
-    private Boolean available;
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinTable(name = "books_to_users", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private Set<User> readers;
 
     public Integer getId() {
         return id;
@@ -36,11 +40,11 @@ public class Book {
         this.author = author;
     }
 
-    public Boolean getAvailable() {
-        return available;
+    public Set<User> getReaders() {
+        return readers;
     }
 
-    public void setAvailable(Boolean available) {
-        this.available = available;
+    public void setReaders(Set<User> readers) {
+        this.readers = readers;
     }
 }

@@ -40,8 +40,22 @@ public class UsersController {
     @PreAuthorize("#id == #userDto.id && hasPermission(#id, 'User', 'write')")
     @PutMapping("/{id}/update")
     public UserDto update(@PathVariable final Integer id,
-                          @RequestBody @Validated({UpdateMarker.class, UpdatePasswordMarker.class}) UserDto userDto) {
-        return userService.updateUser(userById(userDto.getId()));
+                          @RequestBody @Validated(UpdateMarker.class) UserDto userDto) {
+        return userService.updateUser(userDto);
+    }
+
+    @PreAuthorize("#id == #userDto.id && hasPermission(#id, 'User', 'write')")
+    @PutMapping("/{id}/updatePassword")
+    public UserDto updatePassword(@PathVariable final Integer id,
+                                  @RequestBody @Validated(UpdatePasswordMarker.class) UserDto userDto) {
+        return userService.updatePassword(userDto);
+    }
+
+    @PreAuthorize("hasRole('Admin')")
+    @PutMapping("/{id}/updateRole")
+    public UserDto updateRole(@PathVariable final Integer id,
+                              @RequestBody @Validated UserDto userDto) {
+        return userDto;
     }
 
     @PreAuthorize("hasRole('Admin')")

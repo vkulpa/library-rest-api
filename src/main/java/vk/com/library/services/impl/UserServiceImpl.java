@@ -1,16 +1,18 @@
 package vk.com.library.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vk.com.library.dto.UserDto;
 import vk.com.library.entities.User;
+import vk.com.library.exceptions.ResourceNotFoundException;
 import vk.com.library.exceptions.UsernameExistsException;
 import vk.com.library.repositories.UserRepository;
 import vk.com.library.repositories.UserRoleRepository;
 import vk.com.library.services.api.UserService;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,22 +42,39 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new UsernameExistsException("Username already exists, please choose another one.");
         }
-        return convertEntityToDto(userRepository.save(convertDtoToEntity(user)));
+
+        User record = new User();
+        record.setUsername(user.getUsername());
+        record.setPassword(passwordEncoder.encode(user.getPassword()));
+        record.setActive(true);
+        record.setRoles(userRoleRepository.findAllByName("User"));
+
+        return convertEntityToDto(userRepository.save(record));
     }
 
     @Transactional
-    public UserDto updateUser(UserDto user) {
-        // TODO: update doesn't work yet
-        return convertEntityToDto(userRepository.save(convertDtoToEntity(user)));
+    public UserDto updateUser(UserDto user) throws UsernameNotFoundException, ResourceNotFoundException {
+        Optional<User> record = userRepository.findByUsername(user.getUsername());
+        if (record.isPresent() && record.get().getId() != user.getId()) {
+            throw new UsernameExistsException("Username already exists, please choose another one.");
+        }
+        record.get().setUsername(user.getUsername());
+        record.get().setActive(user.getActive());
+        return convertEntityToDto(userRepository.save(record.get()));
     }
 
-    private User convertDtoToEntity(UserDto userDto) {
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setActive(true);
-        user.setRoles(userRoleRepository.findAllByName("User"));
-        return user;
+    @Transactional
+    public UserDto updatePassword(UserDto user) throws ResourceNotFoundException {
+        Optional<User> record = userRepository.findById(user.getId());
+        record.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        record.get().setPassword(passwordEncoder.encode(user.getPassword()));
+        return convertEntityToDto(userRepository.save(record.get()));
+    }
+
+    private User getUserById(UserDto user) {
+        Optional<User> record = userRepository.findById(user.getId());
+        record.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return record.get();
     }
 
     private UserDto convertEntityToDto(User user) {

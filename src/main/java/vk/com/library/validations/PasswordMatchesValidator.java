@@ -14,8 +14,6 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
         boolean isValid = false;
         if (userDto.getPassword() != null && userDto.getPassword().equals(userDto.getPasswordConfirmation())) {
             isValid = true;
-        } else {
-
         }
 
         return isValid;

@@ -48,12 +48,11 @@ CREATE TABLE books (
     id INT NOT NULL AUTO_INCREMENT,
     name varchar(255) NOT NULL,
     author varchar(255) NOT NULL,
-    available tinyint(1) NOT NULL default false,
     PRIMARY KEY (id),
     UNIQUE KEY BK_book (name, author)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO books (name, author, available)
+INSERT INTO books (name, author)
     VALUES
-        ('John Smith', 'Thinking in Java', true),
-        ('John Mc Smith', 'Thinking in Java 5th edition', true);
+        ('John Smith', 'Thinking in Java'),
+        ('John Mc Smith', 'Thinking in Java 5th edition');

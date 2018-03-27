@@ -10,4 +10,5 @@ public interface UserService {
     List<UserDto> findAll();
     UserDto registerNewUser(UserDto user);
     UserDto updateUser(UserDto user);
+    UserDto updatePassword(UserDto user);
 }

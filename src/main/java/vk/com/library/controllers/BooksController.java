@@ -21,19 +21,7 @@ public class BooksController {
 
     @GetMapping
     public List<BookDto> index() {
-        return bookService.findByAvailable(true);
-    }
-
-    @PreAuthorize("hasRole('Admin')")
-    @GetMapping("/all")
-    public List<BookDto> all() {
         return bookService.findAll();
-    }
-
-    @PreAuthorize("hasRole('Admin')")
-    @GetMapping("/all/unavailable")
-    public List<BookDto> allUnavailable() {
-        return bookService.findByAvailable(false);
     }
 
     @GetMapping("/{id}")
