@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import vk.com.library.components.RestAuthenticationEntryPoint;
 import vk.com.library.handlers.AuthenticationFailureHandler;
 import vk.com.library.handlers.AuthenticationSuccessHandler;
-import vk.com.library.services.LibraryUserDetails;
+import vk.com.library.models.services.LibraryUserDetails;
 
 @Configuration
 @EnableWebSecurity

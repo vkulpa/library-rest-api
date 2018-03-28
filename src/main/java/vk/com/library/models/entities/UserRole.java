@@ -1,4 +1,4 @@
-package vk.com.library.entities;
+package vk.com.library.models.entities;
 
 import javax.persistence.*;
 

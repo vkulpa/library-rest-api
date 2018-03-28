@@ -1,6 +1,6 @@
-package vk.com.library.services.api;
+package vk.com.library.models.services.api;
 
-import vk.com.library.dto.UserDto;
+import vk.com.library.models.dto.UserDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,4 +11,5 @@ public interface UserService {
     UserDto registerNewUser(UserDto user);
     UserDto updateUser(UserDto user);
     UserDto updatePassword(UserDto user);
+    UserDto setRoles(UserDto user);
 }

@@ -1,6 +1,6 @@
 package vk.com.library.validations;
 
-import vk.com.library.dto.UserDto;
+import vk.com.library.models.dto.UserDto;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

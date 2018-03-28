@@ -4,13 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import vk.com.library.dto.UserDto;
+import vk.com.library.models.dto.UserDto;
 import vk.com.library.exceptions.ResourceNotFoundException;
-import vk.com.library.services.LibraryUserDetails;
-import vk.com.library.services.api.UserService;
+import vk.com.library.models.services.LibraryUserDetails;
+import vk.com.library.models.services.api.UserService;
 import vk.com.library.validations.markers.CreateMarker;
 import vk.com.library.validations.markers.UpdateMarker;
 import vk.com.library.validations.markers.UpdatePasswordMarker;
+import vk.com.library.validations.markers.UpdateRolesMarker;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,10 +53,10 @@ public class UsersController {
     }
 
     @PreAuthorize("hasRole('Admin')")
-    @PutMapping("/{id}/updateRole")
-    public UserDto updateRole(@PathVariable final Integer id,
-                              @RequestBody @Validated UserDto userDto) {
-        return userDto;
+    @PutMapping("/{id}/setRoles")
+    public UserDto setRoles(@PathVariable final Integer id,
+                              @RequestBody @Validated(UpdateRolesMarker.class) UserDto userDto) {
+        return userService.setRoles(userDto);
     }
 
     @PreAuthorize("hasRole('Admin')")

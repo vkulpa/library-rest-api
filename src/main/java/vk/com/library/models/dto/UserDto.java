@@ -1,7 +1,7 @@
-package vk.com.library.dto;
+package vk.com.library.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import vk.com.library.entities.UserRole;
+import vk.com.library.models.entities.UserRole;
 import vk.com.library.validations.PasswordMatches;
 import vk.com.library.validations.markers.CreateMarker;
 import vk.com.library.validations.markers.UpdateMarker;

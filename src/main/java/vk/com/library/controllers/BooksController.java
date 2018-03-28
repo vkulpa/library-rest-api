@@ -1,14 +1,13 @@
 package vk.com.library.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vk.com.library.dto.BookDto;
+import vk.com.library.models.dto.BookDto;
 import vk.com.library.exceptions.ResourceNotFoundException;
-import vk.com.library.services.api.BookService;
+import vk.com.library.models.services.api.BookService;
 
 import java.util.List;
 import java.util.Optional;

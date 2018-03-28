@@ -1,20 +1,22 @@
-package vk.com.library.services.impl;
+package vk.com.library.models.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vk.com.library.dto.UserDto;
-import vk.com.library.entities.User;
 import vk.com.library.exceptions.ResourceNotFoundException;
 import vk.com.library.exceptions.UsernameExistsException;
+import vk.com.library.models.dto.UserDto;
+import vk.com.library.models.entities.User;
+import vk.com.library.models.entities.UserRole;
+import vk.com.library.models.services.api.UserService;
 import vk.com.library.repositories.UserRepository;
 import vk.com.library.repositories.UserRoleRepository;
-import vk.com.library.services.api.UserService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,6 +70,18 @@ public class UserServiceImpl implements UserService {
         Optional<User> record = userRepository.findById(user.getId());
         record.orElseThrow(() -> new ResourceNotFoundException("User not found"));
         record.get().setPassword(passwordEncoder.encode(user.getPassword()));
+        return convertEntityToDto(userRepository.save(record.get()));
+    }
+
+    @Transactional
+    public UserDto setRoles(UserDto user) throws ResourceNotFoundException {
+        Optional<User> record = userRepository.findById(user.getId());
+        record.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Set<String> roleNames = user.getRoles().stream().map(ur -> ur.getName()).collect(Collectors.toSet());
+        Set<UserRole> userRoles = userRoleRepository.findAllByNames(roleNames);
+        record.get().setRoles(userRoles);
+
         return convertEntityToDto(userRepository.save(record.get()));
     }
 

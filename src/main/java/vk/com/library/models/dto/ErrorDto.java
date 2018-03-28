@@ -1,4 +1,4 @@
-package vk.com.library.dto;
+package vk.com.library.models.dto;
 
 import java.util.Arrays;
 import java.util.List;

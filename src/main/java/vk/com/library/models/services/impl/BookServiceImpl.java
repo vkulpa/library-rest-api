@@ -1,11 +1,11 @@
-package vk.com.library.services.impl;
+package vk.com.library.models.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vk.com.library.dto.BookDto;
-import vk.com.library.entities.Book;
+import vk.com.library.models.dto.BookDto;
+import vk.com.library.models.entities.Book;
 import vk.com.library.repositories.BookRepository;
-import vk.com.library.services.api.BookService;
+import vk.com.library.models.services.api.BookService;
 
 import java.util.List;
 import java.util.Optional;

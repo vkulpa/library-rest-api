@@ -3,7 +3,7 @@ package vk.com.library.handlers;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import vk.com.library.services.LibraryUser;
+import vk.com.library.models.services.LibraryUser;
 
 import java.io.Serializable;
 

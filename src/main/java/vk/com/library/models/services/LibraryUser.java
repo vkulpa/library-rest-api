@@ -1,9 +1,9 @@
-package vk.com.library.services;
+package vk.com.library.models.services;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import vk.com.library.entities.User;
+import vk.com.library.models.entities.User;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

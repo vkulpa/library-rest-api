@@ -1,4 +1,4 @@
-package vk.com.library.dto;
+package vk.com.library.models.dto;
 
 import vk.com.library.validations.markers.CreateMarker;
 import vk.com.library.validations.markers.UpdateMarker;
