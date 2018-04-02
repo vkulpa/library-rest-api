@@ -2,16 +2,19 @@ package vk.com.library.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import vk.com.library.models.dto.BasicBookDto;
 import vk.com.library.exceptions.ResourceNotFoundException;
+import vk.com.library.models.dto.BasicBookDto;
 import vk.com.library.models.dto.BookDto;
+import vk.com.library.models.services.LibraryUser;
 import vk.com.library.models.services.api.BookService;
 import vk.com.library.validations.markers.BookingMarker;
 import vk.com.library.validations.markers.CreateMarker;
 import vk.com.library.validations.markers.UpdateMarker;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,15 +37,15 @@ public class BooksController {
     }
 
     @PostMapping("/{id}/take")
-    @PreAuthorize("#id == book.id")
-    public BasicBookDto take(@RequestBody @Validated(BookingMarker.class) BasicBookDto book) {
-        return bookService.takeFromLibrary(book);
+    @PreAuthorize("#id == #book.id")
+    public BookDto take(@PathVariable final Integer id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book, Principal principal) {
+        return bookService.takeFromLibrary(book, ((LibraryUser) principal).getUserId());
     }
 
     @PostMapping("/{id}/return")
-    @PreAuthorize("#id == book.id")
-    public BasicBookDto returnABook(@RequestBody @Validated(BookingMarker.class) BasicBookDto book) {
-        return bookService.returnToLibrary(book);
+    @PreAuthorize("#id == #book.id")
+    public BookDto returnABook(@PathVariable final Integer id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book, Principal principal) {
+        return bookService.returnToLibrary(book, ((LibraryUser) principal).getUserId());
     }
 
     @PreAuthorize("hasRole('Admin')")
@@ -63,7 +66,7 @@ public class BooksController {
         return bookService.create(book);
     }
 
-    @PreAuthorize("#id == book.id && hasRole('Admin')")
+    @PreAuthorize("#id == #book.id && hasRole('Admin')")
     @PutMapping("/{id}/update")
     public BasicBookDto update(@RequestBody @Validated(UpdateMarker.class) BasicBookDto book) {
         return bookService.update(book);

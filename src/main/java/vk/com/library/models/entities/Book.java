@@ -15,7 +15,7 @@ public class Book {
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinTable(name = "books_to_users", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private Set<User> readers;
+    private Set<Reader> readers;
 
     public Integer getId() {
         return id;
@@ -49,11 +49,11 @@ public class Book {
         this.inventory = inventory;
     }
 
-    public Set<User> getReaders() {
+    public Set<Reader> getReaders() {
         return readers;
     }
 
-    public void setReaders(Set<User> readers) {
+    public void setReaders(Set<Reader> readers) {
         this.readers = readers;
     }
 }

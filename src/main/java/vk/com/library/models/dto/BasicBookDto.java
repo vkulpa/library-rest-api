@@ -7,8 +7,10 @@ import vk.com.library.validations.markers.UpdateMarker;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Reader;
+import java.util.Set;
 
-@JsonIgnoreProperties(value = {"inventory"}, allowSetters = true)
+@JsonIgnoreProperties(value = {"inventory","readers"}, allowSetters = true)
 public class BasicBookDto {
     @NotNull(groups = { UpdateMarker.class, BookingMarker.class })
     private Integer id;
@@ -22,6 +24,9 @@ public class BasicBookDto {
     private String author;
 
     private Boolean available;
+
+//    @NotNull(groups = BookingMarker.class)
+    private Set<Reader> readers;
 
     public Integer getId() {
         return id;
@@ -53,5 +58,13 @@ public class BasicBookDto {
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    public Set<Reader> getReaders() {
+        return readers;
+    }
+
+    public void setReaders(Set<Reader> readers) {
+        this.readers = readers;
     }
 }
