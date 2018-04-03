@@ -51,7 +51,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto readersByBook(Integer id) {
-        return null;
+        Optional<Book> book = bookRepository.findById(id);
+        book.orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+
+        return convertEntityToDto(book.get());
     }
 
     @Transactional
@@ -109,6 +112,7 @@ public class BookServiceImpl implements BookService {
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setAuthor(entity.getAuthor());
+        dto.setInventory(entity.getInventory());
         dto.setAvailable(entity.getAvailability() > 0);
         dto.setReaders(entity.getReaders().stream().map((u) -> new ReaderDto(u.getId(), u.getUsername())).collect(Collectors.toSet()));
         return dto;
