@@ -38,14 +38,14 @@ public class BooksController {
 
     @PostMapping("/{id}/take")
     @PreAuthorize("#id == #book.id")
-    public BookDto take(@PathVariable final Integer id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book, Principal principal) {
-        return bookService.takeFromLibrary(book, ((LibraryUser) principal).getUserId());
+    public BasicBookDto take(@PathVariable final Integer id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book, Principal principal) {
+        return bookService.takeFromLibrary(book, ((LibraryUser)((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getUserId());
     }
 
     @PostMapping("/{id}/return")
     @PreAuthorize("#id == #book.id")
-    public BookDto returnABook(@PathVariable final Integer id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book, Principal principal) {
-        return bookService.returnToLibrary(book, ((LibraryUser) principal).getUserId());
+    public BasicBookDto returnABook(@PathVariable final Integer id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book, Principal principal) {
+        return bookService.returnToLibrary(book, ((LibraryUser)((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getUserId());
     }
 
     @PreAuthorize("hasRole('Admin')")

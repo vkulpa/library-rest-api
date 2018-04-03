@@ -12,8 +12,8 @@ public interface BookService {
     Optional<BasicBookDto> findById(Integer id);
     BasicBookDto create(BasicBookDto book);
     BasicBookDto update(BasicBookDto book);
-    BookDto takeFromLibrary(BasicBookDto book, Integer user_id);
-    BookDto returnToLibrary(BasicBookDto book, Integer user_idN);
+    BasicBookDto takeFromLibrary(BasicBookDto book, Integer user_id);
+    BasicBookDto returnToLibrary(BasicBookDto book, Integer user_idN);
     List<BookDto> booksWithReaders();
     BookDto readersByBook(Integer id);
 }

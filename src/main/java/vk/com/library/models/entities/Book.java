@@ -13,9 +13,11 @@ public class Book {
     private String author;
     private Integer inventory;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinTable(name = "books_to_users", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private Set<Reader> readers;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "books_to_users",
+            joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private Set<User> readers;
 
     public Integer getId() {
         return id;
@@ -49,11 +51,15 @@ public class Book {
         this.inventory = inventory;
     }
 
-    public Set<Reader> getReaders() {
+    public Set<User> getReaders() {
         return readers;
     }
 
-    public void setReaders(Set<Reader> readers) {
+    public void setReaders(Set<User> readers) {
         this.readers = readers;
+    }
+
+    public Integer getAvailability() {
+        return getInventory() - getReaders().size();
     }
 }

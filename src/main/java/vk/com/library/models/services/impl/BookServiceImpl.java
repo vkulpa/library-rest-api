@@ -3,17 +3,22 @@ package vk.com.library.models.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vk.com.library.exceptions.NotEnoughStockException;
+import vk.com.library.exceptions.ResourceNotFoundException;
 import vk.com.library.models.dto.BasicBookDto;
 import vk.com.library.models.dto.BookDto;
+import vk.com.library.models.dto.ReaderDto;
 import vk.com.library.models.entities.Book;
-import vk.com.library.models.entities.Reader;
 import vk.com.library.models.entities.User;
 import vk.com.library.models.services.api.BookService;
 import vk.com.library.repositories.BookRepository;
-import vk.com.library.repositories.ReaderRepository;
 import vk.com.library.repositories.UserRepository;
 
-import java.util.*;
+import javax.validation.ConstraintViolationException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,9 +29,6 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private ReaderRepository readerRepository;
 
     @Override
     public List<BasicBookDto> findAll() {
@@ -43,7 +45,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> booksWithReaders() {
-        return null;
+        List<Book> books = bookRepository.findAll();
+        return books.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -66,23 +69,30 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BookDto takeFromLibrary(BasicBookDto bookDto, Integer user_id) {
+    public BasicBookDto takeFromLibrary(BasicBookDto bookDto, Integer user_id) {
         Optional<User> user = userRepository.findById(user_id);
         Optional<Book> book = bookRepository.findById(bookDto.getId());
+        book.orElseThrow(() -> new ResourceNotFoundException("Book not found"));
 
-        Reader reader = new Reader(book.get(), user.get());
-        readerRepository.save(reader);
+        if (book.get().getReaders().stream().map((r) -> r.getId()).collect(Collectors.toSet()).contains(user.get().getId())) {
+            throw new ConstraintViolationException("You own this book", null);
+        }
 
-        book = bookRepository.findById(bookDto.getId());
-        Set<Reader> readers = new HashSet<>();
-        readers.add(reader);
-        return convertEntityToDto(book.get(), readers);
+        if (book.get().getAvailability() <= 0) {
+            throw new NotEnoughStockException("Book isn't available in Library");
+        }
+
+        book.get().getReaders().add(user.get());
+        book.get().setReaders(book.get().getReaders());
+        Book savedBook = bookRepository.save(book.get());
+
+        return convertEntityToBasicDto(savedBook);
     }
 
     @Transactional
     @Override
-    public BookDto returnToLibrary(BasicBookDto book, Integer user_id) {
-        return new BookDto();
+    public BasicBookDto returnToLibrary(BasicBookDto book, Integer user_id) {
+        return new BasicBookDto();
     }
 
     private BasicBookDto convertEntityToBasicDto(Book entity) {
@@ -90,17 +100,17 @@ public class BookServiceImpl implements BookService {
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setAuthor(entity.getAuthor());
-        dto.setAvailable((entity.getInventory() - entity.getReaders().size()) > 0);
+        dto.setAvailable(entity.getAvailability() > 0);
         return dto;
     }
 
-    private BookDto convertEntityToDto(Book entity, Set<Reader> readers) {
+    private BookDto convertEntityToDto(Book entity) {
         BookDto dto = new BookDto();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setAuthor(entity.getAuthor());
-        dto.setAvailable((entity.getInventory() - entity.getReaders().size()) > 0);
-        dto.setReaders(readers);
+        dto.setAvailable(entity.getAvailability() > 0);
+        dto.setReaders(entity.getReaders().stream().map((u) -> new ReaderDto(u.getId(), u.getUsername())).collect(Collectors.toSet()));
         return dto;
     }
 }

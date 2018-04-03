@@ -1,6 +1,6 @@
 package vk.com.library.models.dto;
 
-import vk.com.library.models.entities.Reader;
+import vk.com.library.models.entities.User;
 
 import java.util.Set;
 
@@ -10,7 +10,7 @@ public class BookDto {
     private String author;
     private Integer inventory;
     private Boolean available;
-    private Set<Reader> readers;
+    private Set<ReaderDto> readers;
 
     public Integer getId() {
         return id;
@@ -52,11 +52,11 @@ public class BookDto {
         this.available = available;
     }
 
-    public Set<Reader> getReaders() {
+    public Set<ReaderDto> getReaders() {
         return readers;
     }
 
-    public void setReaders(Set<Reader> readers) {
+    public void setReaders(Set<ReaderDto> readers) {
         this.readers = readers;
     }
 }
