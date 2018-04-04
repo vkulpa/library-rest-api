@@ -59,15 +59,25 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BasicBookDto create(BasicBookDto book) {
-
-        return book;
+    public BookDto create(BookDto bookDto) {
+        Book book = new Book();
+        book.setAuthor(bookDto.getAuthor());
+        book.setName(bookDto.getName());
+        book = bookRepository.save(book);
+        return convertEntityToDto(book);
     }
 
     @Transactional
     @Override
-    public BasicBookDto update(BasicBookDto book) {
-        return book;
+    public BookDto update(BookDto bookDto) {
+        Optional<Book> book = bookRepository.findById(bookDto.getId());
+        book.orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+
+        book.get().setName(bookDto.getName());
+        book.get().setAuthor(bookDto.getAuthor());
+        book.get().setInventory(bookDto.getInventory());
+
+        return convertEntityToDto(bookRepository.save(book.get()));
     }
 
     @Transactional
@@ -76,9 +86,10 @@ public class BookServiceImpl implements BookService {
         Optional<User> user = userRepository.findById(user_id);
         Optional<Book> book = bookRepository.findById(bookDto.getId());
         book.orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+        user.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (book.get().getReaders().stream().map((r) -> r.getId()).collect(Collectors.toSet()).contains(user.get().getId())) {
-            throw new ConstraintViolationException("You own this book", null);
+            throw new ConstraintViolationException("You have taken this book already", null);
         }
 
         if (book.get().getAvailability() <= 0) {
@@ -94,8 +105,20 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BasicBookDto returnToLibrary(BasicBookDto book, Integer user_id) {
-        return new BasicBookDto();
+    public BasicBookDto returnToLibrary(BasicBookDto bookDto, Integer user_id) {
+        Optional<User> user = userRepository.findById(user_id);
+        Optional<Book> book = bookRepository.findById(bookDto.getId());
+        book.orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+        user.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!book.get().getReaders().stream().map((r) -> r.getId()).collect(Collectors.toSet()).contains(user.get().getId())) {
+            throw new ConstraintViolationException("You haven't taken this book", null);
+        }
+
+        book.get().getReaders().remove(user.get());
+        bookRepository.save(book.get());
+
+        return convertEntityToBasicDto(book.get());
     }
 
     private BasicBookDto convertEntityToBasicDto(Book entity) {

@@ -48,6 +48,18 @@ public class BooksController {
         return bookService.returnToLibrary(book, ((LibraryUser)((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getUserId());
     }
 
+    @PreAuthorize("hasRole('Admin') && #id == #book.id")
+    @PostMapping("/{id}/take/{user_id}")
+    public BasicBookDto takeByUser(@PathVariable final Integer id, @PathVariable final Integer user_id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book) {
+        return bookService.takeFromLibrary(book, user_id);
+    }
+
+    @PreAuthorize("hasRole('Admin') && #id == #book.id")
+    @PostMapping("/{id}/return/{user_id}")
+    public BasicBookDto returnByUser(@PathVariable final Integer id, @PathVariable final Integer user_id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book) {
+        return bookService.returnToLibrary(book, user_id);
+    }
+
     @PreAuthorize("hasRole('Admin')")
     @GetMapping("/readers")
     public List<BookDto> readers() {
@@ -61,14 +73,14 @@ public class BooksController {
     }
 
     @PreAuthorize("hasRole('Admin')")
-    @PostMapping("/create")
-    public BasicBookDto create(@RequestBody @Validated(CreateMarker.class) BasicBookDto book) {
+    @PostMapping
+    public BookDto create(@RequestBody @Validated(CreateMarker.class) BookDto book) {
         return bookService.create(book);
     }
 
     @PreAuthorize("#id == #book.id && hasRole('Admin')")
     @PutMapping("/{id}/update")
-    public BasicBookDto update(@RequestBody @Validated(UpdateMarker.class) BasicBookDto book) {
+    public BookDto update(@RequestBody @Validated(UpdateMarker.class) BookDto book) {
         return bookService.update(book);
     }
 }
