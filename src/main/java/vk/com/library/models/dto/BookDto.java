@@ -21,7 +21,7 @@ public class BookDto {
     @Size(min = 2, max = 255, groups = { CreateMarker.class, UpdateMarker.class })
     private String author;
 
-    @NotNull(groups = UpdateMarker.class)
+    @NotNull(groups = { CreateMarker.class, UpdateMarker.class })
     @Range(groups = { CreateMarker.class, UpdateMarker.class }, min = 0, max = 100)
     private Integer inventory;
     private Boolean available;

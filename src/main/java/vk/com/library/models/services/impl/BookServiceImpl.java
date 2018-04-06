@@ -63,6 +63,7 @@ public class BookServiceImpl implements BookService {
         Book book = new Book();
         book.setAuthor(bookDto.getAuthor());
         book.setName(bookDto.getName());
+        book.setInventory(bookDto.getInventory());
         book = bookRepository.save(book);
         return convertEntityToDto(book);
     }
@@ -73,8 +74,12 @@ public class BookServiceImpl implements BookService {
         Optional<Book> book = bookRepository.findById(bookDto.getId());
         book.orElseThrow(() -> new ResourceNotFoundException("Book not found"));
 
-        book.get().setName(bookDto.getName());
-        book.get().setAuthor(bookDto.getAuthor());
+        if (bookDto.getName() != null) {
+            book.get().setName(bookDto.getName());
+        }
+        if (bookDto.getAuthor() != null) {
+            book.get().setAuthor(bookDto.getAuthor());
+        }
         book.get().setInventory(bookDto.getInventory());
 
         return convertEntityToDto(bookRepository.save(book.get()));
@@ -137,7 +142,7 @@ public class BookServiceImpl implements BookService {
         dto.setAuthor(entity.getAuthor());
         dto.setInventory(entity.getInventory());
         dto.setAvailable(entity.getAvailability() > 0);
-        dto.setReaders(entity.getReaders().stream().map((u) -> new ReaderDto(u.getId(), u.getUsername())).collect(Collectors.toSet()));
+        dto.setReaders(entity.getReaders() != null ? entity.getReaders().stream().map((u) -> new ReaderDto(u.getId(), u.getUsername())).collect(Collectors.toSet()) : null);
         return dto;
     }
 }

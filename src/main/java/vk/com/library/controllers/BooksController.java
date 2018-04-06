@@ -78,9 +78,9 @@ public class BooksController {
         return bookService.create(book);
     }
 
-    @PreAuthorize("#id == #book.id && hasRole('Admin')")
+    @PreAuthorize("hasRole('Admin') && #id == #book.id")
     @PutMapping("/{id}/update")
-    public BookDto update(@RequestBody @Validated(UpdateMarker.class) BookDto book) {
+    public BookDto update(@PathVariable final Integer id, @RequestBody @Validated(UpdateMarker.class) BookDto book) {
         return bookService.update(book);
     }
 }

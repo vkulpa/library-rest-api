@@ -1,6 +1,7 @@
 package vk.com.library.models.entities;
 
 import javax.persistence.*;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -60,6 +61,9 @@ public class Book {
     }
 
     public Integer getAvailability() {
+        if (getReaders() == null) {
+            return 0;
+        }
         return getInventory() - getReaders().size();
     }
 }
