@@ -1,6 +1,7 @@
 package vk.com.library.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
@@ -36,51 +37,50 @@ public class BooksController {
         return book.get();
     }
 
-    @PostMapping("/{id}/take")
-    @PreAuthorize("#id == #book.id")
-    public BasicBookDto take(@PathVariable final Integer id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book, Principal principal) {
-        return bookService.takeFromLibrary(book, ((LibraryUser)((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getUserId());
-    }
-
-    @PostMapping("/{id}/return")
-    @PreAuthorize("#id == #book.id")
-    public BasicBookDto returnABook(@PathVariable final Integer id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book, Principal principal) {
-        return bookService.returnToLibrary(book, ((LibraryUser)((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getUserId());
-    }
-
-    @PreAuthorize("hasRole('Admin') && #id == #book.id")
-    @PostMapping("/{id}/take/{user_id}")
-    public BasicBookDto takeByUser(@PathVariable final Integer id, @PathVariable final Integer user_id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book) {
-        return bookService.takeFromLibrary(book, user_id);
-    }
-
-    @PreAuthorize("hasRole('Admin') && #id == #book.id")
-    @PostMapping("/{id}/return/{user_id}")
-    public BasicBookDto returnByUser(@PathVariable final Integer id, @PathVariable final Integer user_id, @RequestBody @Validated(BookingMarker.class) BasicBookDto book) {
-        return bookService.returnToLibrary(book, user_id);
-    }
-
-    @PreAuthorize("hasRole('Admin')")
-    @GetMapping("/readers")
-    public List<BookDto> readers() {
-        return bookService.booksWithReaders();
-    }
-
-    @PreAuthorize("hasRole('Admin')")
-    @GetMapping("/{id}/readers")
-    public BookDto readersByBook(@PathVariable final Integer id) {
-        return bookService.readersByBook(id);
-    }
-
-    @PreAuthorize("hasRole('Admin')")
     @PostMapping
     public BookDto create(@RequestBody @Validated(CreateMarker.class) BookDto book) {
         return bookService.create(book);
     }
 
-    @PreAuthorize("hasRole('Admin') && #id == #book.id")
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public BookDto update(@PathVariable final Integer id, @RequestBody @Validated(UpdateMarker.class) BookDto book) {
         return bookService.update(book);
+    }
+
+    @PreAuthorize("hasRole('Admin')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable final Integer id) {
+        bookService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/booking")
+    public BasicBookDto take(@PathVariable final Integer id, Principal principal) {
+        return bookService.takeFromLibrary(id, ((LibraryUser)((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getUserId());
+    }
+
+    @DeleteMapping("/{id}/booking")
+    public BasicBookDto returnABook(@PathVariable final Integer id, Principal principal) {
+        return bookService.returnToLibrary(id, ((LibraryUser)((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getUserId());
+    }
+
+    @PostMapping("/{id}/admin/booking/for_user/{user_id}")
+    public BasicBookDto takeByUser(@PathVariable final Integer id, @PathVariable final Integer user_id) {
+        return bookService.takeFromLibrary(id, user_id);
+    }
+
+    @DeleteMapping("/{id}/admin/booking/for_user/{user_id}")
+    public BasicBookDto returnByUser(@PathVariable final Integer id, @PathVariable final Integer user_id) {
+        return bookService.returnToLibrary(id, user_id);
+    }
+
+    @GetMapping("/admin/readers")
+    public List<BookDto> readers() {
+        return bookService.booksWithReaders();
+    }
+
+    @GetMapping("/{id}/admin/readers")
+    public BookDto readersByBook(@PathVariable final Integer id) {
+        return bookService.readersByBook(id);
     }
 }

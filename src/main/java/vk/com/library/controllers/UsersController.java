@@ -39,21 +39,20 @@ public class UsersController {
     }
 
     @PreAuthorize("#id == #userDto.id && hasPermission(#id, 'User', 'write')")
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public UserDto update(@PathVariable final Integer id,
                           @RequestBody @Validated(UpdateMarker.class) UserDto userDto) {
         return userService.updateUser(userDto);
     }
 
     @PreAuthorize("#id == #userDto.id && hasPermission(#id, 'User', 'write')")
-    @PutMapping("/{id}/updatePassword")
+    @PutMapping("/{id}/password")
     public UserDto updatePassword(@PathVariable final Integer id,
                                   @RequestBody @Validated(UpdatePasswordMarker.class) UserDto userDto) {
         return userService.updatePassword(userDto);
     }
 
-    @PreAuthorize("hasRole('Admin')")
-    @PutMapping("/{id}/setRoles")
+    @PutMapping("/{id}/admin/roles")
     public UserDto setRoles(@PathVariable final Integer id,
                               @RequestBody @Validated(UpdateRolesMarker.class) UserDto userDto) {
         return userService.setRoles(userDto);

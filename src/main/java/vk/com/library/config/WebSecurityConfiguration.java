@@ -33,12 +33,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.authorizeRequests().antMatchers("/**/users/register").anonymous();
-        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
-        http.formLogin().loginProcessingUrl("/v1/login").permitAll()
+        http.csrf().disable()
+                .formLogin().loginProcessingUrl("/v1/login").permitAll()
                 .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailureHandler);
-        http.authorizeRequests().anyRequest().authenticated();
+                .failureHandler(authenticationFailureHandler)
+                .and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
+                .and().authorizeRequests().antMatchers("/**/users/register").anonymous()
+                .and().authorizeRequests().antMatchers("/**/admin", "/**/admin/**").hasRole("Admin")
+                .and().authorizeRequests().anyRequest().authenticated();
     }
 }

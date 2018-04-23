@@ -85,15 +85,22 @@ public class BookServiceImpl implements BookService {
         return convertEntityToDto(bookRepository.save(book.get()));
     }
 
+    @Override
+    public void deleteById(Integer id) {
+        Optional<Book> book = bookRepository.findById(id);
+        book.orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+        bookRepository.deleteById(id);
+    }
+
     @Transactional
     @Override
-    public BasicBookDto takeFromLibrary(BasicBookDto bookDto, Integer user_id) {
+    public BasicBookDto takeFromLibrary(Integer id, Integer user_id) {
         Optional<User> user = userRepository.findById(user_id);
-        Optional<Book> book = bookRepository.findById(bookDto.getId());
+        Optional<Book> book = bookRepository.findById(id);
         book.orElseThrow(() -> new ResourceNotFoundException("Book not found"));
         user.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (book.get().getReaders().stream().map((r) -> r.getId()).collect(Collectors.toSet()).contains(user.get().getId())) {
+        if (book.get().getReaders().stream().map(User::getId).collect(Collectors.toSet()).contains(user.get().getId())) {
             throw new ConstraintViolationException("You have taken this book already", null);
         }
 
@@ -110,13 +117,13 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BasicBookDto returnToLibrary(BasicBookDto bookDto, Integer user_id) {
+    public BasicBookDto returnToLibrary(Integer id, Integer user_id) {
         Optional<User> user = userRepository.findById(user_id);
-        Optional<Book> book = bookRepository.findById(bookDto.getId());
+        Optional<Book> book = bookRepository.findById(id);
         book.orElseThrow(() -> new ResourceNotFoundException("Book not found"));
         user.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (!book.get().getReaders().stream().map((r) -> r.getId()).collect(Collectors.toSet()).contains(user.get().getId())) {
+        if (!book.get().getReaders().stream().map(User::getId).collect(Collectors.toSet()).contains(user.get().getId())) {
             throw new ConstraintViolationException("You haven't taken this book", null);
         }
 
