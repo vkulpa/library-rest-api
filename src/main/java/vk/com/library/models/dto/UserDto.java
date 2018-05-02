@@ -10,6 +10,7 @@ import vk.com.library.validations.markers.UpdateRolesMarker;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @PasswordMatches(groups = { CreateMarker.class, UpdatePasswordMarker.class })
@@ -31,7 +32,7 @@ public class UserDto {
     private Boolean active;
 
     @NotNull(groups = UpdateRolesMarker.class)
-    private Set<UserRole> roles;
+    private Set<UserRole> roles = new HashSet<>();
 
     public Integer getId() {
         return id;

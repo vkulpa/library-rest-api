@@ -1,6 +1,8 @@
 package vk.com.library.models.entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -25,7 +27,7 @@ public class User {
     @JoinTable(name = "books_to_users",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"))
-    private Set<Book> books;
+    private Set<Book> books = new HashSet<>();
 
     public Integer getId() {
         return id;
@@ -73,5 +75,21 @@ public class User {
 
     public void setBooks(Set<Book> books) {
         this.books = books;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() == null ? System.identityHashCode(this) : getId().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof User)) {
+            return false;
+        }
+
+        return getId().equals(((User) obj).getId());
     }
 }

@@ -11,12 +11,12 @@ import vk.com.library.models.dto.BasicBookDto;
 import vk.com.library.models.dto.BookDto;
 import vk.com.library.models.services.LibraryUser;
 import vk.com.library.models.services.api.BookService;
-import vk.com.library.validations.markers.BookingMarker;
 import vk.com.library.validations.markers.CreateMarker;
 import vk.com.library.validations.markers.UpdateMarker;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequestMapping(value = "/v1/books", headers = "X-API-VERSION=1", produces = "application/vnd.library.app-v1+json")
@@ -28,6 +28,11 @@ public class BooksController {
     @GetMapping
     public List<BasicBookDto> index() {
         return bookService.findAll();
+    }
+
+    @GetMapping("/authors")
+    public Map<String, List<BasicBookDto>> byAuthors() {
+        return bookService.findAllGroupByAuthor();
     }
 
     @GetMapping("/{id}")

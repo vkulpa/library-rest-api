@@ -52,7 +52,7 @@ CREATE TABLE books (
     UNIQUE KEY BK_book (name, author)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO books (name, author)
+INSERT INTO books (author, name)
     VALUES
         ('John Smith', 'Thinking in Java'),
         ('John Mc Smith', 'Thinking in Java 5th edition');

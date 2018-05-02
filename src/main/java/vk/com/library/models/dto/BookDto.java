@@ -1,12 +1,12 @@
 package vk.com.library.models.dto;
 
 import org.hibernate.validator.constraints.Range;
-import vk.com.library.validations.markers.BookingMarker;
 import vk.com.library.validations.markers.CreateMarker;
 import vk.com.library.validations.markers.UpdateMarker;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 public class BookDto {
@@ -25,7 +25,7 @@ public class BookDto {
     @Range(groups = { CreateMarker.class, UpdateMarker.class }, min = 0, max = 100)
     private Integer inventory;
     private Boolean available;
-    private Set<ReaderDto> readers;
+    private Set<ReaderDto> readers = new HashSet<>();
 
     public Integer getId() {
         return id;

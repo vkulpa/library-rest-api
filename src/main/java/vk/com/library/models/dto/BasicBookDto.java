@@ -1,17 +1,17 @@
 package vk.com.library.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import vk.com.library.validations.markers.BookingMarker;
 import vk.com.library.validations.markers.CreateMarker;
 import vk.com.library.validations.markers.UpdateMarker;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @JsonIgnoreProperties(value = {"inventory","readers"})
 public class BasicBookDto {
-    @NotNull(groups = { UpdateMarker.class, BookingMarker.class })
+    @NotNull(groups = UpdateMarker.class)
     private Integer id;
 
     @NotNull(groups = CreateMarker.class)
@@ -24,7 +24,7 @@ public class BasicBookDto {
 
     private Boolean available;
 
-    private Set<ReaderDto> readers;
+    private Set<ReaderDto> readers = new HashSet<>();
 
     public Integer getId() {
         return id;

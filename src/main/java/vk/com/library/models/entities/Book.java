@@ -1,6 +1,9 @@
 package vk.com.library.models.entities;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,7 +21,7 @@ public class Book {
     @JoinTable(name = "books_to_users",
             joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private Set<User> readers;
+    private Set<User> readers = new HashSet<>();
 
     public Integer getId() {
         return id;
@@ -58,12 +61,5 @@ public class Book {
 
     public void setReaders(Set<User> readers) {
         this.readers = readers;
-    }
-
-    public Integer getAvailability() {
-        if (getReaders() == null) {
-            return 0;
-        }
-        return getInventory() - getReaders().size();
     }
 }

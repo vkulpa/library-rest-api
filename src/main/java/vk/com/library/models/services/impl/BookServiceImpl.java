@@ -15,10 +15,9 @@ import vk.com.library.repositories.BookRepository;
 import vk.com.library.repositories.UserRepository;
 
 import javax.validation.ConstraintViolationException;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +34,12 @@ public class BookServiceImpl implements BookService {
         List<Book> books = bookRepository.findAll();
         List<BasicBookDto> basicBookDtos = books.stream().map(this::convertEntityToBasicDto).collect(Collectors.toList());
         return basicBookDtos;
+    }
+
+    @Override
+    public Map<String, List<BasicBookDto>> findAllGroupByAuthor() {
+        List<Book>books = bookRepository.findAll();
+        return books.stream().map(this::convertEntityToBasicDto).collect(Collectors.groupingBy(BasicBookDto::getAuthor));
     }
 
     @Override
@@ -104,7 +109,7 @@ public class BookServiceImpl implements BookService {
             throw new ConstraintViolationException("You have taken this book already", null);
         }
 
-        if (book.get().getAvailability() <= 0) {
+        if (getAvailability(book.get()) <= 0) {
             throw new NotEnoughStockException("Book isn't available in Library");
         }
 
@@ -138,7 +143,7 @@ public class BookServiceImpl implements BookService {
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setAuthor(entity.getAuthor());
-        dto.setAvailable(entity.getAvailability() > 0);
+        dto.setAvailable(getAvailability(entity) > 0);
         return dto;
     }
 
@@ -148,8 +153,12 @@ public class BookServiceImpl implements BookService {
         dto.setName(entity.getName());
         dto.setAuthor(entity.getAuthor());
         dto.setInventory(entity.getInventory());
-        dto.setAvailable(entity.getAvailability() > 0);
+        dto.setAvailable(getAvailability(entity) > 0);
         dto.setReaders(entity.getReaders() != null ? entity.getReaders().stream().map((u) -> new ReaderDto(u.getId(), u.getUsername())).collect(Collectors.toSet()) : null);
         return dto;
+    }
+
+    private Integer getAvailability(Book entity) {
+        return entity.getInventory() - entity.getReaders().size();
     }
 }
